@@ -20,7 +20,7 @@ from datetime import datetime
 
 """WEB SCRAPING"""
 base_link="https://www.thedailystar.net/"
-response=requests.get(base_link).content
+response=requests.get(base_link,timeout=6).content
 soup=bs(response,"html.parser")
 data=soup.find_all('div',class_="list-content")
 
@@ -45,6 +45,12 @@ sheet=wb[str(current)]
 sheet['A1']="Title"
 sheet['B1']="URL"
 
+columns=['A','B']
+#setting up column dimension
+for cols in columns:
+	sheet.column_dimensions[cols].width=35
+
+
 i=2
 for collections in data:
 	title=collections.h5.text
@@ -57,4 +63,3 @@ for collections in data:
 wb.save(file_name)
 
 print("Success!")
-	
