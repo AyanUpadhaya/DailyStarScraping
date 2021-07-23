@@ -19,10 +19,15 @@ from bs4 import BeautifulSoup as bs
 from datetime import datetime
 
 """WEB SCRAPING"""
-base_link="https://www.thedailystar.net/"
-response=requests.get(base_link,timeout=6).content
+base_link="https://www.thedailystar.net/english"
+try:
+	response=requests.get(base_link,timeout=10).content
+except Exception as e:
+	print(e)
+
+
 soup=bs(response,"html.parser")
-data=soup.find_all('div',class_="list-content")
+data=soup.find_all('h3',class_="title")
 
 
  
@@ -51,15 +56,16 @@ for cols in columns:
 	sheet.column_dimensions[cols].width=35
 
 
+
 i=2
-for collections in data:
-	title=collections.h5.text
-	url=collections.h5.a.get('href')
+for dt in data:
+	title=dt.a.text
+	url=dt.a.get('href')
 	sheet['A'+str(i)]=title
 	sheet['B'+str(i)]=base_link+url
-
 	i+=1
 
 wb.save(file_name)
 
 print("Success!")
+	
